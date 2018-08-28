@@ -10,9 +10,9 @@ import (
 )
 
 // GetHTTPSClient creates a new client for connecting to HTTPS servers.
-func GetHTTPSClient(crt string) (*http.Client, error) {
+func GetHTTPSClient(cert string) (*http.Client, error) {
 	roots := x509.NewCertPool()
-	ok := roots.AppendCertsFromPEM([]byte(crt))
+	ok := roots.AppendCertsFromPEM([]byte(cert))
 	if !ok {
 		return nil, NewError(500, "unable to parse root certificate")
 	}
@@ -27,20 +27,20 @@ func GetHTTPSClient(crt string) (*http.Client, error) {
 }
 
 // GetGRPCServerCredentials returns a set of server LS credentials for gRPC.
-func GetGRPCServerCredentials(crt, key string) (credentials.TransportCredentials, error) {
-	cert, err := tls.X509KeyPair([]byte(crt), []byte(key))
+func GetGRPCServerCredentials(cert, key string) (credentials.TransportCredentials, error) {
+	crt, err := tls.X509KeyPair([]byte(cert), []byte(key))
 	if err != nil {
 		return nil, err
 	}
 
-	creds := credentials.NewServerTLSFromCert(&cert)
+	creds := credentials.NewServerTLSFromCert(&crt)
 	return creds, nil
 }
 
 // GetGRPCClientCredentials returns a set of client TLS credentials for gRPC.
-func GetGRPCClientCredentials(crt string) (credentials.TransportCredentials, error) {
+func GetGRPCClientCredentials(cert string) (credentials.TransportCredentials, error) {
 	pool := x509.NewCertPool()
-	ok := pool.AppendCertsFromPEM([]byte(crt))
+	ok := pool.AppendCertsFromPEM([]byte(cert))
 	if !ok {
 		return nil, NewError(500, "unable to parse certificate")
 	}
