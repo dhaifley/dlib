@@ -1,0 +1,155 @@
+syntax = "proto3";
+package dlib;
+import public "google/protobuf/timestamp.proto";
+
+// ErrorReponse messages contain information about error conditions.
+message ErrorResponse {
+	int64 Code = 1;
+	string Msg = 2;
+	google.protobuf.Timestamp Time = 3;
+}
+
+// ResultReponse messages contain the result of a single operation.
+message ResultReponse {
+	string Code = 1;
+	string Val = 2;
+	string Type = 3;
+	int64 Num = 4;
+	string Msg = 5;
+	ErrorResponse Err = 6;
+	string Data = 7;
+	google.protobuf.Timestamp Time = 8;
+}
+
+// DeleteResponse meassages represent responses to delete requests.
+message DeleteResponse {
+	int64 Num = 1;
+}
+
+// Auth provides authentication service functionality.
+service Auth {
+	// GetTokens returns a stream of tokens from the database.
+	rpc GetTokens(TokenRequest) returns (stream TokenResponse) {}
+
+	// PostTokens serializes a stream of tokens to the database.
+	rpc SaveTokens(stream TokenRequest) returns (stream TokenResponse) {}
+
+	// DeleteTokens deletes tokens from the database.
+	rpc DeleteTokens(TokenRequest) returns (DeleteResponse) {}
+
+	// GetUsers returns a stream of users from the database.
+	rpc GetUsers(UserRequest) returns (stream UserResponse) {}
+
+	// PostUsers serializes a stream of users to the database.
+	rpc SaveUsers(stream UserRequest) returns (stream UserResponse) {}
+
+	// DeleteUsers deletes users from the database.
+	rpc DeleteUsers(UserRequest) returns (DeleteResponse) {}
+
+	// GetPerms returns a stream of permissions from the database.
+	rpc GetPerms(PermRequest) returns (stream PermResponse) {}
+
+	// PostPerms serializes a stream of permissions to the database.
+	rpc SavePerms(stream PermRequest) returns (stream PermResponse) {}
+
+	// DeletePerms deletes permissions from the database.
+	rpc DeletePerms(PermRequest) returns (DeleteResponse) {}
+
+	// GetUserPerms returns a stream of user permissions from the database.
+	rpc GetUserPerms(UserPermRequest) returns (stream UserPermResponse) {}
+
+	// PostUserPerms serializes a stream of user permissions to the database.
+	rpc SaveUserPerms(stream UserPermRequest) returns (stream UserPermResponse) {}
+
+	// DeleteUserPerms deletes user permissions from the database.
+	rpc DeleteUserPerms(UserPermRequest) returns (DeleteResponse) {}
+
+	// Login authenticates a provided user and creates a new token.
+	rpc Login(UserRequest) returns (TokenResponse) {}
+
+	// Logout destroys the provided token.
+	rpc Logout(TokenRequest) returns (TokenResponse) {}
+
+	// Auth authenticates a provided token and returns a user value.
+	rpc Auth(AuthRequest) returns (AuthResponse) {}
+}
+
+// PermRequest messages represent permission request values.
+message PermRequest {
+	int64 ID = 1;
+	string Service = 2;
+	string Name = 3;
+}
+
+// PermResponse messages represent permission response values.
+message PermResponse {
+	int64 ID = 1;
+	string Service = 2;
+	string Name = 3;
+}
+
+// TokenRequest messages represent token request values.
+message TokenRequest {
+	int64 ID = 1;
+	string Token = 2;
+	int64 UserID = 3;
+	google.protobuf.Timestamp Created = 4;
+	google.protobuf.Timestamp Expires = 5;
+	google.protobuf.Timestamp Start = 6;
+	google.protobuf.Timestamp End = 7;
+	google.protobuf.Timestamp Old = 8;
+}
+
+// TokenResponse messages represent token response values.
+message TokenResponse {
+	int64 ID = 1;
+	string Token = 2;
+	int64 UserID = 3;
+	google.protobuf.Timestamp Created = 4;
+	google.protobuf.Timestamp Expires = 5;
+}
+
+// UserRequest messages represent user request values.
+message UserRequest {
+	int64 ID = 1;
+	string User = 2;
+	string Pass = 3;
+	string Name = 4;
+	string Email = 5;
+}
+
+// UserMessage messages represent user response values.
+message UserResponse {
+	int64 ID = 1;
+	string User = 2;
+	string Pass = 3;
+	string Name = 4;
+	string Email = 5;
+}
+
+// UserPermRequest messages represent user permission request values.
+message UserPermRequest {
+	int64 ID = 1;
+	int64 UserID = 2;
+	int64 PermID = 3;
+}
+
+// UserPermResponse messages represent user permission response values.
+message UserPermResponse {
+	int64 ID = 1;
+	int64 UserID = 2;
+	int64 PermID = 3;
+}
+
+// AuthRequest messages represent requests to authenticate tokens.
+message AuthRequest {
+	TokenRequest Token = 1;
+	PermRequest Perm = 2;
+}
+
+// AuthResponse messages represent responses to authentication requests.
+message AuthResponse {
+	bool Ok = 1;
+	UserResponse User = 2;
+	PermResponse Perm = 3;
+}

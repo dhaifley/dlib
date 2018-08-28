@@ -1,0 +1,17 @@
+.glide/
+bin/
+*.exe
+*.dll
+*.so
+*.o
+*.a
+*.dylib
+*.test
+*.out
+*.json
+*.prof
+*.xml
+*.swp
+*.env
+*_env.sh
+*.DS_Store
